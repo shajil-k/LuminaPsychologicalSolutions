@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beck Depression Inventory</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: #f4f4f9;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
+      width: 100%;
+      margin: 1rem;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .question {
+      margin-bottom: 1.5rem;
+    }
+    .options {
+      list-style: none;
+      padding: 0;
+    }
+    .options li {
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      padding: 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .options li:hover {
+      background-color: #e9e9e9;
+    }
+    .progress-bar {
+      width: 100%;
+      background-color: #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+    .progress {
+      width: 0;
+      height: 20px;
+      background-color: #76c7c0;
+      text-align: center;
+      line-height: 20px;
+      color: white;
+      transition: width 0.3s;
+    }
+    .results {
+      text-align: center;
+    }
+    .disclaimer {
+      background-color: #fff3cd;
+      border: 1px solid #ffeeba;
+      border-radius: 4px;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+    .navigation {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+    .btn {
+      background-color: #76c7c0;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .btn:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="quiz-container">
+    <h1>Test your depression</h1>
+    <p>This test consists of 21 groups of statements. Read each group carefully and choose one statement from each group that best describes the way you have been feeling during the past two weeks, including today.</p>
+        <hr>
+    <div class="progress-bar">
+      <div class="progress" id="progress">0%</div>
+    </div>
+    <div id="question-container"></div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "Sadness",
+        options: [
+          { text: "I do not feel sad.", score: 0 },
+          { text: "I feel sad much of the time.", score: 1 },
+          { text: "I am sad all of the time.", score: 2 },
+          { text: "I am so sad or unhappy that I can’t stand it.", score: 3 },
+        ],
+      },
+      {
+        question: "Pessimism",
+        options: [
+          { text: "I am not discouraged about my future.", score: 0 },
+          { text: "I feel more discouraged about my future than I used to be.", score: 1 },
+          { text: "I do not expect things to work out for me.", score: 2 },
+          { text: "I feel my future is hopeless and will only get worse.", score: 3 },
+        ],
+      },
+      {
+        question: "Past Failure",
+        options: [
+          { text: "I do not feel like a failure.", score: 0 },
+          { text: "I have failed more than I should have.", score: 1 },
+          { text: "As I look back, I see a lot of failures.", score: 2 },
+          { text: "I feel I am a total failure as a person.", score: 3 },
+        ],
+      },
+      {
+        question: "Loss of Pleasure",
+        options: [
+          { text: "I get as much pleasure as I ever did from the things I enjoy.", score: 0 },
+          { text: "I don’t enjoy things as much as I used to.", score: 1 },
+          { text: "I get very little pleasure from the things I used to enjoy.", score: 2 },
+          { text: "I can’t get any pleasure from the things I used to enjoy.", score: 3 },
+        ],
+      },
+      {
+        question: "Guilty Feelings",
+        options: [
+          { text: "I don’t feel particularly guilty.", score: 0 },
+          { text: "I feel guilty over many things I have done or should have done.", score: 1 },
+          { text: "I feel quite guilty most of the time.", score: 2 },
+          { text: "I feel guilty all of the time.", score: 3 },
+        ],
+      },
+      {
+        question: "Punishment Feelings",
+        options: [
+          { text: "I don’t feel I am being punished.", score: 0 },
+          { text: "I feel I may be punished.", score: 1 },
+          { text: "I expect to be punished.", score: 2 },
+          { text: "I feel I am being punished.", score: 3 },
+        ],
+      },
+      {
+        question: "Self-Dislike",
+        options: [
+          { text: "I feel the same about myself as ever.", score: 0 },
+          { text: "I have lost confidence in myself.", score: 1 },
+          { text: "I am disappointed in myself.", score: 2 },
+          { text: "I dislike myself.", score: 3 },
+        ],
+      },
+      {
+        question: "Self-Criticalness",
+        options: [
+          { text: "I don’t criticize or blame myself more than usual.", score: 0 },
+          { text: "I criticize myself more often than I used to.", score: 1 },
+          { text: "I blame myself for all of my faults.", score: 2 },
+          { text: "I blame myself for everything bad that happens.", score: 3 },
+        ],
+      },
+      {
+        question: "Suicidal Thoughts or Wishes",
+        options: [
+          { text: "I don’t have any thoughts of killing myself.", score: 0 },
+          { text: "I have thoughts of killing myself, but I would not carry them out.", score: 1 },
+          { text: "I would like to kill myself.", score: 2 },
+          { text: "I would kill myself if I had the chance.", score: 3 },
+        ],
+      },
+      {
+        question: "Crying",
+        options: [
+          { text: "I don’t cry any more than I used to.", score: 0 },
+          { text: "I cry more than I used to.", score: 1 },
+          { text: "I cry over every little thing.", score: 2 },
+          { text: "I feel like crying, but I can’t.", score: 3 },
+        ],
+      },
+      {
+        question: "Agitation",
+        options: [
+          { text: "I am no more restless or wound up than usual.", score: 0 },
+          { text: "I feel more restless or wound up than usual.", score: 1 },
+          { text: "I am so restless or agitated that it’s hard to stay still.", score: 2 },
+          { text: "I am so restless or agitated that I have to keep moving or doing something.", score: 3 },
+        ],
+      },
+      {
+        question: "Loss of Interest",
+        options: [
+          { text: "I have not lost interest in other people or activities.", score: 0 },
+          { text: "I am less interested in other people or things than before.", score: 1 },
+          { text: "I have lost most of my interest in other people or things.", score: 2 },
+          { text: "It’s hard to get interested in anything.", score: 3 },
+        ],
+      },
+      {
+        question: "Indecisiveness",
+        options: [
+          { text: "I make decisions about as well as ever.", score: 0 },
+          { text: "I find it more difficult to make decisions than usual.", score: 1 },
+          { text: "I have much greater difficulty making decisions than I used to.", score: 2 },
+          { text: "I have trouble making any decisions.", score: 3 },
+        ],
+      },
+      {
+        question: "Worthlessness",
+        options: [
+          { text: "I do not feel I am worthless.", score: 0 },
+          { text: "I don’t consider myself as worthwhile and useful as I used to be.", score: 1 },
+          { text: "I feel more worthless as compared to other people.", score: 2 },
+          { text: "I feel utterly worthless.", score: 3 },
+        ],
+      },
+      {
+        question: "Loss of Energy",
+        options: [
+          { text: "I have as much energy as ever.", score: 0 },
+          { text: "I have less energy than I used to have.", score: 1 },
+          { text: "I don’t have enough energy to do very much.", score: 2 },
+          { text: "I don’t have enough energy to do anything.", score: 3 },
+        ],
+      },
+      {
+        question: "Changes in Sleeping Pattern",
+        options: [
+          { text: "I have not experienced any change in my sleeping pattern.", score: 0 },
+          { text: "I sleep somewhat more than usual.", score: 1 },
+          { text: "I sleep somewhat less than usual.", score: 1 },
+          { text: "I sleep a lot more than usual.", score: 2 },
+          { text: "I sleep a lot less than usual.", score: 2 },
+          { text: "I sleep most of the day.", score: 3 },
+          { text: "I wake up 1–2 hours early and can’t get back to sleep.", score: 3 },
+        ],
+      },
+      {
+        question: "Irritability",
+        options: [
+          { text: "I am no more irritable than usual.", score: 0 },
+          { text: "I am more irritable than usual.", score: 1 },
+          { text: "I am much more irritable than usual.", score: 2 },
+          { text: "I am irritable all the time.", score: 3 },
+        ],
+      },
+      {
+        question: "Changes in Appetite",
+        options: [
+          { text: "I have not experienced any change in my appetite.", score: 0 },
+          { text: "My appetite is somewhat less than usual.", score: 1 },
+          { text: "My appetite is somewhat greater than usual.", score: 1 },
+          { text: "My appetite is much less than usual.", score: 2 },
+          { text: "My appetite is much greater than usual.", score: 2 },
+          { text: "I have no appetite at all.", score: 3 },
+          { text: "I crave food all the time.", score: 3 },
+        ],
+      },
+      {
+        question: "Concentration Difficulty",
+        options: [
+          { text: "I can concentrate as well as ever.", score: 0 },
+          { text: "I can’t concentrate as well as usual.", score: 1 },
+          { text: "It’s hard to keep my mind on anything for very long.", score: 2 },
+          { text: "I find I can’t concentrate on anything.", score: 3 },
+        ],
+      },
+      {
+        question: "Tiredness or Fatigue",
+        options: [
+          { text: "I am no more tired or fatigued than usual.", score: 0 },
+          { text: "I get tired or fatigued more easily than usual.", score: 1 },
+          { text: "I am too tired or fatigued to do most of the things I used to do.", score: 2 },
+          { text: "I am too tired or fatigued to do anything.", score: 3 },
+        ],
+      },
+      {
+        question: "Loss of Interest in Sex",
+        options: [
+          { text: "I have not noticed any recent change in my interest in sex.", score: 0 },
+          { text: "I am less interested in sex than I used to be.", score: 1 },
+          { text: "I am much less interested in sex now.", score: 2 },
+          { text: "I have lost interest in sex completely.", score: 3 },
+        ],
+      },
+    ];
+
+    let currentQuestion = 0;
+    let answers = [];
+
+    const questionContainer = document.getElementById('question-container');
+    const progressEl = document.getElementById('progress');
+    const quizContainer = document.getElementById('quiz-container');
+
+    function showQuestion() {
+      const question = questions[currentQuestion];
+      const questionEl = document.createElement('div');
+      questionEl.className = 'question';
+      questionEl.innerHTML = `<h2>${question.question}</h2>`;
+      
+      const optionsEl = document.createElement('ul');
+      optionsEl.className = 'options';
+
+      question.options.forEach(option => {
+        const optionEl = document.createElement('li');
+        optionEl.innerText = option.text;
+        optionEl.addEventListener('click', () => {
+          answers.push(option.score);
+          currentQuestion++;
+          updateProgress();
+          if (currentQuestion < questions.length) {
+            showQuestion();
+          } else {
+            showResults();
+          }
+        });
+        optionsEl.appendChild(optionEl);
+      });
+
+      const navigationEl = document.createElement('div');
+      navigationEl.className = 'navigation';
+
+      const backButton = document.createElement('button');
+      backButton.className = 'btn';
+      backButton.innerText = 'Back';
+      backButton.disabled = currentQuestion === 0;
+      backButton.addEventListener('click', () => {
+        if (currentQuestion > 0) {
+          answers.pop();
+          currentQuestion--;
+          updateProgress();
+          showQuestion();
+        }
+      });
+
+      navigationEl.appendChild(backButton);
+
+      questionContainer.innerHTML = '';
+      questionContainer.appendChild(questionEl);
+      questionContainer.appendChild(optionsEl);
+      questionContainer.appendChild(navigationEl);
+    }
+
+    function updateProgress() {
+      const progressPercentage = Math.round(((currentQuestion) / questions.length) * 100);
+      progressEl.style.width = `${progressPercentage}%`;
+      progressEl.innerText = `${progressPercentage}%`;
+    }
+
+    function showResults() {
+      const totalScore = answers.reduce((acc, score) => acc + score, 0);
+      let depressionLevel = '';
+
+      if (totalScore >= 0 && totalScore <= 13) {
+        depressionLevel = 'Minimal';
+      } else if (totalScore >= 14 && totalScore <= 19) {
+        depressionLevel = 'Mild';
+      } else if (totalScore >= 20 && totalScore <= 28) {
+        depressionLevel = 'Moderate';
+      } else if (totalScore >= 29 && totalScore <= 63) {
+        depressionLevel = 'Severe';
+      }
+
+      quizContainer.innerHTML = `
+        <div class="results">
+          <h1>Results</h1>
+          <h2>Your score: ${totalScore}</h2>
+          <h3>Depression level: ${depressionLevel}</h3>
+          <div class="disclaimer">
+            <strong>Disclaimer:</strong> This self-assessment is not a substitute for a professional diagnosis.(Consult a qualified mental health professional for an accurate diagnosis). The results of this test are for informational purposes only and should not be considered a diagnosis.
+          </div>
+          <h2>For a more comprehensive breakdown of your assessment results, please navigate to the detailed <a href="#carousel-link">carousel</a>.</h2>
+        </div>
+      `;
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
