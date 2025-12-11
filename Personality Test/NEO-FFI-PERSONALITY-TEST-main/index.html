@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEO FFI Personality Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: #fff;
+        }
+
+        .container {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 30px 50px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            max-width: 800px;
+            width: 90%;
+            text-align: center;
+        }
+
+        h1, h2 {
+            font-weight: 600;
+        }
+
+        #progress-bar-container {
+            width: 100%;
+            height: 10px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background-color: #fff;
+            border-radius: 5px;
+            transition: width 0.3s ease-in-out;
+        }
+        
+        #dominant-trait-summary {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        #results-graph-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            height: 250px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .graph-bar-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 18%;
+        }
+
+        .graph-bar {
+            width: 50px;
+            background: linear-gradient(to top, #8e2de2, #4a00e0);
+            border-radius: 5px;
+            transition: height 1s ease-in-out;
+            position: relative;
+        }
+        
+        .graph-bar-label {
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .option {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            background-color: transparent;
+            color: #fff;
+            cursor: pointer;
+            font-size: 1em;
+            text-align: center;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        
+        .option.selected {
+            background-color: #fff;
+            color: #2575fc;
+            font-weight: 600;
+            animation: pulse 0.5s;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        #navigation-buttons button, .control-button {
+            padding: 12px 25px;
+            margin: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            background-color: #fff;
+            color: #2575fc;
+            font-weight: 600;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .disclaimer {
+            font-size: 0.9em;
+            margin-top: 25px;
+            color: rgba(255, 255, 255, 0.8);
+            font-style: italic;
+        }
+        .result-item {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .result-item.prominent {
+            border: 2px solid #fff;
+        }
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .interpretation {
+            display: block;
+            text-align: left;
+            margin-top: 10px;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>NEO FFI Personality Test</h1>
+
+        <div id="instructions">
+            <h2>Instructions</h2>
+            <p>This is a personality test consisting of 60 questions. For each question, please select the option that best describes you. There are no right or wrong answers. Please answer all questions to get an accurate result.</p>
+            <button id="start-button" class="control-button">Start Test</button>
+        </div>
+
+        <div id="gender-selection" style="display: none;">
+            <h2>Select Your Gender</h2>
+            <p>Your gender is used to provide a more accurate T-score based on normative data. Please select one of the options below.</p>
+            <button class="control-button gender-btn" data-gender="male">Male</button>
+            <button class="control-button gender-btn" data-gender="female">Female</button>
+            <div style="margin-top: 20px;">
+                <button id="gender-back-button" class="control-button">Back</button>
+            </div>
+        </div>
+
+        <div id="test-container" style="display: none;">
+            <div id="progress-bar-container">
+                <div id="progress-bar"></div>
+            </div>
+            <div id="question-area">
+                <p id="question-number"></p>
+                <p id="question-text"></p>
+                <div id="options-container"></div>
+            </div>
+            <div id="navigation-buttons">
+                <button id="back-button">Back</button>
+            </div>
+        </div>
+
+        <div id="results-container" style="display: none;">
+            <h2>Your Personality Profile</h2>
+            <div id="dominant-trait-summary"></div>
+            <div id="results-graph-container" style="height: 400px; width: 100%;">
+            <canvas id="results-chart"></canvas>
+        </div>
+            <div id="sorted-results"></div>
+            <button id="restart-button" class="control-button" style="margin-top: 20px;">Take Again</button>
+            <p class="disclaimer"><strong>Disclaimer:</strong> This is a self-report inventory. The results are for informational purposes only and should not be considered a substitute for professional psychological advice. For a more detailed and accurate assessment, please consult a qualified psychologist.</p>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { id: 1, text: "I am not a worrier." },
+            { id: 2, text: "I like to have a lot of people around me." },
+            { id: 3, text: "I don't like to waste my time daydreaming." },
+            { id: 4, text: "I try to be courteous to everyone I meet." },
+            { id: 5, text: "I keep my belongings clean and neat." },
+            { id: 6, text: "I often feel inferior to others." },
+            { id: 7, text: "I laugh easily." },
+            { id: 8, text: "Once I find the right way to do something, I stick to it." },
+            { id: 9, text: "I often get into arguments with my family and co-workers." },
+            { id: 10, text: "I'm pretty good about pacing myself so as to get things done on time." },
+            { id: 11, text: "When I'm under a great deal of stress, sometimes I feel like I'm going to pieces." },
+            { id: 12, text: "I don’t consider myself especially ‘light-hearted’." },
+            { id: 13, text: "I am intrigued by the patterns I find in art and nature." },
+            { id: 14, text: "Some people think I’m selfish and egotistical." },
+            { id: 15, text: "I am not a very methodical person." },
+            { id: 16, text: "I rarely feel lonely or blue." },
+            { id: 17, text: "I really enjoy talking to people." },
+            { id: 18, text: "I believe letting students hear controversial speakers can only confuse and mislead them." },
+            { id: 19, text: "I would rather cooperate with others than compete with them." },
+            { id: 20, text: "I try to perform all the tasks assigned to me conscientiously." },
+            { id: 21, text: "I often feel tense and jittery." },
+            { id: 22, text: "I like to be where the action is." },
+            { id: 23, text: "Poetry has little or no effect on me." },
+            { id: 24, text: "I tend to be cynical and skeptical of others’ intentions." },
+            { id: 25, text: "I have a clear set of goals and work toward them in an orderly fashion." },
+            { id: 26, text: "Sometimes I feel completely worthless." },
+            { id: 27, text: "I usually prefer to do things alone." },
+            { id: 28, text: "I often try new and foreign foods." },
+            { id: 29, text: "I believe that most people will take advantage of you if you let them." },
+            { id: 30, text: "I waste a lot of time before settling down to work." },
+            { id: 31, text: "I rarely feel fearful or anxious." },
+            { id: 32, text: "I often feel as if I’m bursting with energy." },
+            { id: 33, text: "I seldom notice the moods or feelings that different environments produce." },
+            { id: 34, text: "Most people I know like me." },
+            { id: 35, text: "I work hard to accomplish my goals." },
+            { id: 36, text: "I often get angry at the way people treat me." },
+            { id: 37, text: "I am a cheerful, high-spirited person." },
+            { id: 38, text: "I believe we should look to our religious authorities for decisions on moral issues." },
+            { id: 39, text: "Some people think of me as cold and calculating." },
+            { id: 40, text: "When I make a commitment, I can always be counted on to follow through." },
+            { id: 41, text: "Too often, when things go wrong, I get discouraged and feel like giving up." },
+            { id: 42, text: "I am not an optimist." },
+            { id: 43, text: "Sometimes when I am reading poetry or looking at a work of art, I feel a chill or a wave of excitement." },
+            { id: 44, text: "I’m hard-headed and tough-minded in my attitudes." },
+            { id: 45, text: "Sometimes I’m not as dependable or reliable as I should be." },
+            { id: 46, text: "I am seldom sad or depressed." },
+            { id: 47, text: "My life is fast-paced." },
+            { id: 48, text: "I have little interest in speculating on the nature of the universe or the human condition." },
+            { id: 49, text: "I generally try to be thoughtful and considerate." },
+            { id: 50, text: "I am a productive person who always gets the job done." },
+            { id: 51, text: "I often feel helpless and want someone else to solve my problems." },
+            { id: 52, text: "I am a very active person." },
+            { id: 53, text: "I have a lot of intellectual curiosity." },
+            { id: 54, text: "If I don’t like people, I let them know it." },
+            { id: 55, text: "I never seem to be able to get organized." },
+            { id: 56, text: "At times I have been so ashamed I just wanted to hide." },
+            { id: 57, text: "I would rather go my own way than be a leader of others." },
+            { id: 58, text: "I often enjoy playing with theories or abstract ideas." },
+            { id: 59, text: "If necessary, I am willing to manipulate people to get what I want." },
+            { id: 60, text: "I strive for excellence in everything I do." }
+        ];
+
+        const options = ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"];
+
+        const DOMAIN_ITEMS = { N: [1, 6, 11, 16, 21, 26, 31, 36, 41, 46, 51, 56], E: [2, 7, 12, 17, 22, 27, 32, 37, 42, 47, 52, 57], O: [3, 8, 13, 18, 23, 28, 33, 38, 43, 48, 53, 58], A: [4, 9, 14, 19, 24, 29, 34, 39, 44, 49, 54, 59], C: [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60] };
+        const REVERSE_SCORED_ITEMS = { N: [1, 16, 31, 46], E: [12, 27, 42, 57], O: [3, 8, 18, 23, 38, 48], A: [9, 14, 24, 29, 39, 44, 54, 59], C: [15, 30, 45, 55] };
+        const INTERPRETATIONS = { N: { name: "Neuroticism", description: "Reflects emotional stability. High scorers tend to be anxious and insecure, while low scorers are calm and self-satisfied." }, E: { name: "Extraversion", description: "Indicates sociability. High scorers are outgoing and energetic, while low scorers are solitary and reserved." }, O: { name: "Openness", description: "Refers to imagination and insight. High scorers are creative and curious, while low scorers are conventional and down-to-earth." }, A: { name: "Agreeableness", description: "Measures compassion and cooperation. High scorers are trusting and helpful, while low scorers are competitive and outspoken." }, C: { name: "Conscientiousness", description: "Represents thoughtfulness and impulse control. High scorers are organized and disciplined, while low scorers are easy-going and careless." } };
+
+        let T_SCORES_MAP = { male: {}, female: {} };
+
+        (async function() {
+            const startButton = document.getElementById('start-button');
+            startButton.disabled = true;
+
+            const [maleResponse, femaleResponse] = await Promise.all([
+                fetch('t_scores_male.json'),
+                fetch('t_scores_female.json')
+            ]);
+            
+            T_SCORES_MAP.male = await maleResponse.json();
+            T_SCORES_MAP.female = await femaleResponse.json();
+
+            startButton.disabled = false;
+        })();
+
+        let currentQuestionIndex = 0;
+        let userGender = "male";
+        let userResponses = {};
+
+        const instructionsContainer = document.getElementById('instructions');
+        const genderSelectionContainer = document.getElementById('gender-selection');
+        const testContainer = document.getElementById('test-container');
+        const resultsContainer = document.getElementById('results-container');
+        const questionNumberElement = document.getElementById('question-number');
+        const questionTextElement = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const backButton = document.getElementById('back-button');
+        const startButton = document.getElementById('start-button');
+        const restartButton = document.getElementById('restart-button');
+        const genderBackButton = document.getElementById('gender-back-button');
+        const sortedResultsContainer = document.getElementById('sorted-results');
+        const dominantTraitSummary = document.getElementById('dominant-trait-summary');
+        const progressBar = document.getElementById('progress-bar');
+        const resultsGraphContainer = document.getElementById('results-graph-container');
+
+        startButton.addEventListener('click', () => { instructionsContainer.style.display = 'none'; genderSelectionContainer.style.display = 'block'; });
+        genderBackButton.addEventListener('click', () => {
+            genderSelectionContainer.style.display = 'none';
+            instructionsContainer.style.display = 'block';
+        });
+        document.querySelectorAll('.gender-btn').forEach(button => { button.addEventListener('click', (e) => { userGender = e.target.getAttribute('data-gender'); genderSelectionContainer.style.display = 'none'; testContainer.style.display = 'block'; renderQuestion(); }); });
+        backButton.addEventListener('click', () => {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion();
+            } else {
+                testContainer.style.display = 'none';
+                genderSelectionContainer.style.display = 'block';
+            }
+        });
+        restartButton.addEventListener('click', () => { currentQuestionIndex = 0; userResponses = {}; resultsContainer.style.display = 'none'; instructionsContainer.style.display = 'block'; });
+
+        function renderQuestion() {
+            const progress = (currentQuestionIndex / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            const question = questions[currentQuestionIndex];
+            questionNumberElement.textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
+            questionTextElement.textContent = question.text;
+            optionsContainer.innerHTML = '';
+            options.forEach((optionText, index) => {
+                const optionElement = document.createElement('button');
+                optionElement.className = 'option';
+                optionElement.textContent = optionText;
+                optionElement.addEventListener('click', (event) => selectOption(question.id, index, event));
+                if (userResponses[question.id] === index) optionElement.classList.add('selected');
+                optionsContainer.appendChild(optionElement);
+            });
+            
+        }
+
+                function selectOption(questionId, optionValue, event) {
+
+                    userResponses[questionId] = optionValue;
+
+        
+
+                    // Disable all option buttons to prevent multiple clicks
+
+                    const optionButtons = document.querySelectorAll('.option');
+
+                    optionButtons.forEach(button => {
+
+                        button.disabled = true;
+
+                    });
+
+        
+
+                    // Add 'selected' class for visual feedback
+
+                    event.target.classList.add('selected');
+
+        
+
+                    // Move to the next question after a short delay
+
+                    setTimeout(() => {
+
+                        if (currentQuestionIndex < questions.length - 1) {
+
+                            currentQuestionIndex++;
+
+                            renderQuestion();
+
+                        } else {
+
+                            showResults();
+
+                        }
+
+                    }, 200); // Reduced delay
+
+                }
+
+        
+
+                function getTScoreLevel(tScore) {
+
+                    if (tScore >= 70) return "Very High";
+
+                    if (tScore >= 60) return "High";
+
+                    if (tScore >= 45) return "Average";
+
+                    if (tScore >= 35) return "Low";
+
+                    return "Very Low";
+
+                }
+
+                
+
+                function getTScore(rawScore, domainScores) {
+
+                    if (!domainScores || !domainScores.raw || !domainScores.t) return 0;
+
+        
+
+                    // The raw scores are sorted in descending order
+
+                    for (let i = 0; i < domainScores.raw.length; i++) {
+
+                        if (rawScore >= domainScores.raw[i]) {
+
+                            return domainScores.t[i];
+
+                        }
+
+                    }
+
+                    
+
+                    // If the raw score is lower than any in the table, return the t-score for the lowest raw score.
+
+                    if (domainScores.t.length > 0) {
+
+                        return domainScores.t[domainScores.t.length - 1];
+
+                    }
+
+        
+
+                    return 0;
+
+                }
+
+        
+
+                function calculateScores() {
+
+                    const rawScores = { N: 0, E: 0, O: 0, A: 0, C: 0 };
+
+                    for (const domain in DOMAIN_ITEMS) {
+
+                        DOMAIN_ITEMS[domain].forEach(itemId => {
+
+                            let response = userResponses[itemId];
+
+                            if(response === undefined) return;
+
+                            if (REVERSE_SCORED_ITEMS[domain].includes(itemId)) response = 4 - response;
+
+                            rawScores[domain] += response;
+
+                        });
+
+                    }
+
+                    const tScores = {};
+
+                    const tScoreTables = T_SCORES_MAP[userGender];
+
+                    for (const domain in rawScores) {
+
+                        tScores[domain] = getTScore(rawScores[domain], tScoreTables[domain]);
+
+                    }
+
+                    return { RAW: rawScores, T: tScores };
+
+                }
+
+        function showResults() {
+            testContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+            progressBar.style.width = '100%';
+
+            const { T: tScores } = calculateScores();
+            const sortedDomains = Object.keys(tScores).sort((a, b) => tScores[b] - tScores[a]);
+            
+            const dominantDomain = sortedDomains[0];
+            dominantTraitSummary.innerHTML = `Your most dominant trait is <strong>${INTERPRETATIONS[dominantDomain].name}</strong>.`;
+
+            sortedResultsContainer.innerHTML = '';
+
+            const chartData = {
+                labels: [],
+                datasets: [{
+                    label: 'T-Score',
+                    data: [],
+                    borderColor: '#fff',
+                    backgroundColor: '#fff',
+                    pointBackgroundColor: [],
+                    pointBorderColor: [],
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    showLine: true,
+                    fill: false,
+                }]
+            };
+
+            const colors = {
+                N: 'rgba(255, 99, 132, 1)',
+                E: 'rgba(54, 162, 235, 1)',
+                O: 'rgba(255, 206, 86, 1)',
+                A: 'rgba(75, 192, 192, 1)',
+                C: 'rgba(153, 102, 255, 1)'
+            };
+            
+            ['N', 'E', 'O', 'A', 'C'].forEach(domain => {
+                const tScore = tScores[domain];
+                const level = getTScoreLevel(tScore);
+
+                chartData.labels.push(INTERPRETATIONS[domain].name);
+                chartData.datasets[0].data.push(tScore);
+                chartData.datasets[0].pointBackgroundColor.push(colors[domain]);
+                chartData.datasets[0].pointBorderColor.push(colors[domain]);
+
+
+                // Create interpretation text
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item' + (domain === dominantDomain ? ' prominent' : '');
+                resultItem.innerHTML = `
+                    <div class="result-header">
+                        <span>${INTERPRETATIONS[domain].name}</span>
+                        <span>${level}</span>
+                    </div>
+                    <div class="interpretation"><p>${INTERPRETATIONS[domain].description}</p></div>
+                `;
+                sortedResultsContainer.appendChild(resultItem);
+            });
+
+            const ctx = document.getElementById('results-chart').getContext('2d');
+            if(window.myChart) {
+                window.myChart.destroy();
+            }
+            window.myChart = new Chart(ctx, {
+                type: 'line',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: 'white',
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        },
+                        y: {
+                            display: true, // Show Y-axis
+                            beginAtZero: true,
+                            max: 80,
+                             grid: {
+                                color: "rgba(255, 255, 255, 0.2)", // Make horizontal grid lines visible
+                                drawBorder: false,
+                            },
+                            ticks: {
+                                color: 'white',
+                                font: {
+                                    size: 14
+                                },
+                                stepSize: 5,
+                                callback: function(value, index, values) {
+                                   switch(value) {
+                                       case 0: return 'Very Low';
+                                       case 35: return 'Low';
+                                       case 45: return 'Average';
+                                       case 60: return 'High';
+                                       case 70: return 'Very High';
+                                       default: return '';
+                                   }
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                           display: false
+                        },
+                        tooltip: {
+                            enabled: true,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y;
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        instructionsContainer.style.display = 'block';
+    </script>
+</body>
+</html>
