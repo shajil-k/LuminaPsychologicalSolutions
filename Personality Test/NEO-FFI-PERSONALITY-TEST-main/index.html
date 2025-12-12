@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEO FFI Personality Test</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KN44E87X3Q"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-KN44E87X3Q');
+    </script>
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
@@ -173,7 +183,7 @@
         <div id="instructions">
             <h2>Instructions</h2>
             <p>This is a personality test consisting of 60 questions. For each question, please select the option that best describes you. There are no right or wrong answers. Please answer all questions to get an accurate result.</p>
-            <button id="start-button" class="control-button">Start Test</button>
+            <button id="start-button" class="control-button" onclick="gtag('event', 'test_started');">Start Test</button>
         </div>
 
         <div id="gender-selection" style="display: none;">
@@ -391,7 +401,7 @@
 
                         } else {
 
-                            showResults();
+                            showResults(gtag('event', 'test_completed',{gender:userGender}));
 
                         }
 

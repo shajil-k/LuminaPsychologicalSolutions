@@ -96,6 +96,14 @@
       }
     }
   </style>
+   <script async src="https://www.googletagmanager.com/gtag/js?id=G-KN44E87X3Q"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-KN44E87X3Q');
+    </script>
 </head>
 <body>
   <div class="container" id="quiz-container">
@@ -316,6 +324,9 @@
 
     function showQuestion() {
       const question = questions[currentQuestion];
+      if (currentQuestion === 0 && answers.length === 0) {
+        gtag('event', 'beck_test_started');
+      }
       const questionEl = document.createElement('div');
       questionEl.className = 'question';
       questionEl.innerHTML = `<h2>${question.question}</h2>`;
@@ -382,6 +393,11 @@
       } else if (totalScore >= 29 && totalScore <= 63) {
         depressionLevel = 'Severe';
       }
+      gtag('event', 'beck_test_completed', {
+        score: totalScore,
+        level: depressionLevel
+      });
+
 
       quizContainer.innerHTML = `
         <div class="results">
