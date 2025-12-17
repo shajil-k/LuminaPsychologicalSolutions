@@ -194,6 +194,14 @@
             text-align: justify;
         }
     </style>
+     <script async src="https://www.googletagmanager.com/gtag/js?id=G-KN44E87X3Q"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-KN44E87X3Q');
+    </script>
 </head>
 <body>
     <div id="app-root" class="app-container"></div>
@@ -287,6 +295,11 @@
                     </div>
                 `;
             } else if (appState === 'results') {
+              gtag('event', 'test_completed', {
+                test_name: 'Beck_Anxiety_Inventory',
+                total_score: scores.reduce((a, b) => a + b, 0)
+              });
+
                 const totalScore = scores.reduce((acc, curr) => acc + curr, 0);
                 const interpretation = getInterpretation(totalScore);
                 appDiv.innerHTML = `
@@ -326,8 +339,11 @@
         }
 
         function startTest() {
-            appState = 'test';
-            render();
+          gtag('event', 'test_started', {
+            test_name: 'Beck_Anxiety_Inventory'
+          });
+          appState = 'test';
+          render();
         }
 
         function goBack() {
