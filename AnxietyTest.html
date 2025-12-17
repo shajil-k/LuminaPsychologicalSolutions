@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Beck Anxiety Inventory</title>
+    <style>
+        :root {
+            --primary-color: #4A148C; /* Deep Purple */
+            --secondary-color: #7E57C2; /* Lighter Purple */
+            --accent-color: #007BFF; /* Bright Blue */
+            --background-color: #f4f7f9;
+            --text-color: #333;
+            --container-bg: #ffffff;
+            --success-color: #28a745; /* Green */
+            --info-color: #ffc107;    /* Yellow */
+            --warning-color: #fd7e14; /* Orange */
+            --danger-color: #dc3545;  /* Red */
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+                Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background: var(--background-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .app {
+            background: var(--container-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .app.fade-out {
+            opacity: 0;
+        }
+
+        h1, h2 {
+            color: var(--primary-color);
+        }
+        
+        .start-page p {
+            color: var(--text-color);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress {
+            height: 10px;
+            background: linear-gradient(90deg, var(--accent-color), var(--secondary-color));
+            transition: width 0.3s ease-in-out;
+        }
+        
+        .question-section p {
+            font-size: 1.3rem;
+            color: var(--text-color);
+            margin-bottom: 20px;
+            min-height: 60px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .options div {
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        .options label {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 15px;
+            width: 100%;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            display: block;
+            box-sizing: border-box;
+        }
+
+        .options label:hover {
+            background: #e9ecef;
+            transform: scale(1.02);
+        }
+        
+        .options input[type='radio'] {
+            display: none;
+        }
+
+        .options input[type='radio']:checked + label {
+            background: var(--secondary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 0;
+            width: 120px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        
+        button.back-btn {
+            background-color: var(--secondary-color);
+        }
+
+        button:hover:not(:disabled) {
+            background-color: #311B92; /* Darker Purple */
+            transform: scale(1.05);
+        }
+        
+        button.back-btn:hover:not(:disabled) {
+            background-color: #5E35B1; /* Darker Lighter Purple */
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .results-section {
+            text-align: center;
+        }
+
+        .results-section .interpretation-level {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 1.5rem 0 0.5rem;
+            text-align: center;
+        }
+        .results-section .interpretation-level.minimal { color: var(--success-color); }
+        .results-section .interpretation-level.mild { color: var(--info-color); }
+        .results-section .interpretation-level.moderate { color: var(--warning-color); }
+        .results-section .interpretation-level.severe { color: var(--danger-color); }
+        
+        .results-section .interpretation-text {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .results-section p {
+            font-size: 1.1rem;
+        }
+
+        .results-section strong {
+            font-size: 1.3rem;
+        }
+        
+        .disclaimer {
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+            margin-top: 2rem;
+            text-align: justify;
+        }
+    </style>
+</head>
+<body>
+    <div id="app-root" class="app-container"></div>
+
+    <script>
+        const questions = [
+            { text: "Numbness or tingling" },
+            { text: "Feeling hot" },
+            { text: "Wobbliness in legs" },
+            { text: "Unable to relax" },
+            { text: "Fear of worst happening" },
+            { text: "Dizzy or lightheaded" },
+            { text: "Heart pounding / racing" },
+            { text: "Unsteady" },
+            { text: "Terrified or afraid" },
+            { text: "Nervous" },
+            { text: "Feeling of choking" },
+            { text: "Hands trembling" },
+            { text: "Shaky / unsteady" },
+            { text: "Fear of losing control" },
+            { text: "Difficulty in breathing" },
+            { text: "Fear of dying" },
+            { text: "Scared" },
+            { text: "Indigestion" },
+            { text: "Faint / lightheaded" },
+            { text: "Face flushed" },
+            { text: "Hot / cold sweats" },
+        ];
+
+        let currentQuestion = 0;
+        let scores = Array(questions.length).fill(null);
+        let appState = 'start'; // 'start', 'test', 'results'
+
+        function getInterpretation(score) {
+            if (score >= 0 && score <= 7) {
+                return { level: "Minimal Anxiety", description: "You are experiencing a minimal level of anxiety. Your symptoms are likely not disruptive to your daily life.", className: "minimal" };
+            } else if (score >= 8 && score <= 15) {
+                return { level: "Mild Anxiety", description: "You are experiencing a mild level of anxiety. While your symptoms may be uncomfortable, they are likely manageable.", className: "mild" };
+            } else if (score >= 16 && score <= 25) {
+                return { level: "Moderate Anxiety", description: "You are experiencing a moderate level of anxiety. Your symptoms may be causing you some distress and interfering with your daily activities.", className: "moderate" };
+            } else {
+                return { level: "Severe Anxiety", description: "You are experiencing a severe level of anxiety. Your symptoms are likely causing you significant distress and are probably interfering with your daily life.", className: "severe" };
+            }
+        }
+        
+        function render() {
+            const appRoot = document.getElementById('app-root');
+            appRoot.innerHTML = '';
+            const appDiv = document.createElement('div');
+            appDiv.className = 'app';
+            appRoot.appendChild(appDiv);
+
+            if (appState === 'start') {
+                appDiv.innerHTML = `
+                    <div class="start-page">
+                        <h1>Beck Anxiety Inventory</h1>
+                        <p>Indicate how much you have been bothered by each symptom during the past month, including today, by selecting the appropriate option.</p>
+                        <button onclick="startTest()">Start Test</button>
+                    </div>
+                `;
+            } else if (appState === 'test') {
+                const currentQ = questions[currentQuestion];
+                appDiv.innerHTML = `
+                    <div class="question-section">
+                        <div class="progress-bar">
+                            <div class="progress" style="width: ${((currentQuestion) / questions.length) * 100}%;"></div>
+                        </div>
+                        <p>${currentQ.text}</p>
+                        <div class="options">
+                            ${[
+                                { score: 0, label: "Not at all" },
+                                { score: 1, label: "Mildly, but it didn’t bother me much" },
+                                { score: 2, label: "Moderately – it wasn’t pleasant at times" },
+                                { score: 3, label: "Severely – it bothered me a lot" },
+                            ].map(({ score, label }) => `
+                                <div>
+                                    <input
+                                        type="radio"
+                                        id="option-${score}"
+                                        name="question-${currentQuestion}"
+                                        value="${score}"
+                                        onchange="handleScoreChange(${score})"
+                                    />
+                                    <label for="option-${score}">${label}</label>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="navigation">
+                            <button class="back-btn" onclick="goBack()">Back</button>
+                        </div>
+                    </div>
+                `;
+            } else if (appState === 'results') {
+                const totalScore = scores.reduce((acc, curr) => acc + curr, 0);
+                const interpretation = getInterpretation(totalScore);
+                appDiv.innerHTML = `
+                    <div class="results-section">
+                        <h2>Your Results</h2>
+                        <p>Your total score is: <strong>${totalScore}/63</strong></p>
+                        <h3 class="interpretation-level ${interpretation.className}">${interpretation.level}</h3>
+                        <p class="interpretation-text">${interpretation.description}</p>
+                        <p class="disclaimer">
+                            <strong>Disclaimer:</strong> This is a self-report inventory. The results are for informational purposes only and should not be considered a substitute for a professional psychological evaluation. For a proper diagnosis and treatment, please consult a qualified mental health professional.
+                        </p>
+                         <div class="navigation">
+                            <button onclick="resetTest()">Take Again</button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        function handleScoreChange(score) {
+            scores[currentQuestion] = score;
+            
+            const appDiv = document.querySelector('.app');
+            appDiv.classList.add('fade-out');
+
+            setTimeout(() => {
+                if (currentQuestion < questions.length - 1) {
+                    currentQuestion++;
+                } else {
+                    appState = 'results';
+                }
+                render();
+                const newAppDiv = document.querySelector('.app');
+                newAppDiv.classList.add('fade-out');
+                setTimeout(() => newAppDiv.classList.remove('fade-out'), 10);
+            }, 500);
+        }
+
+        function startTest() {
+            appState = 'test';
+            render();
+        }
+
+        function goBack() {
+             const appDiv = document.querySelector('.app');
+            appDiv.classList.add('fade-out');
+
+            setTimeout(() => {
+                if(appState === 'results'){
+                    appState = 'test';
+                } else if (appState === 'test' && currentQuestion > 0) {
+                    currentQuestion--;
+                } else {
+                    appState = 'start';
+                }
+                render();
+                 const newAppDiv = document.querySelector('.app');
+                newAppDiv.classList.add('fade-out');
+                setTimeout(() => newAppDiv.classList.remove('fade-out'), 10);
+            }, 500);
+        }
+
+        function resetTest() {
+            currentQuestion = 0;
+            scores = Array(questions.length).fill(null);
+            appState = 'start';
+            render();
+        }
+
+        document.addEventListener('DOMContentLoaded', render);
+    </script>
+</body>
+</html>
