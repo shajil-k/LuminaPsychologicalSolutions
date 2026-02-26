@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Multidimensional Test Anxiety Scale (MTAS)</title>
+
+    <link rel="stylesheet" href="./MTAS/style.css">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1 class="heading">Multidimensional Test Anxiety Scale (MTAS)</h1>
+
+        <div id="instruction-page" class="page">
+
+            <p>Please think about how you USUALLY think and feel when taking a test or exam. Try not to think for too long about each question. Read each statement and select the option that best indicates how you think or feel.</p>
+
+            <button id="start-test" class="button">Start Test</button>
+
+        </div>
+
+
+
+        <div id="age-page" class="page hidden">
+
+            <h2>Select Your Age</h2>
+
+            <div class="age-selection">
+
+                <label for="age-select">Age:</label>
+
+                <select id="age-select" class="select-field">
+
+                    <!-- Options will be populated by JavaScript -->
+
+                </select>
+
+            </div>
+
+            <div class="navigation-buttons">
+
+                <button id="prev-age" class="button prev-button">Previous</button>
+
+                <button id="next-age" class="button next-button">Next</button>
+
+            </div>
+
+        </div>
+
+
+
+        <div id="gender-page" class="page hidden">
+
+            <h2>Select Your Gender</h2>
+
+            <div class="gender-selection">
+
+                <label class="radio-label">
+
+                    <input type="radio" name="gender" value="male" class="radio-input"> Male
+
+                </label>
+
+                <label class="radio-label">
+
+                    <input type="radio" name="gender" value="female" class="radio-input"> Female
+
+                </label>
+
+            </div>
+
+            <div class="navigation-buttons">
+
+                <button id="prev-gender" class="button prev-button">Previous</button>
+
+                <button id="next-gender" class="button next-button">Next</button>
+
+            </div>
+
+        </div>
+
+
+
+        <div id="question-page" class="page hidden">
+
+            <h2 id="question-number">Question X of 16</h2>
+
+            <p id="question-text"></p>
+
+            <div id="answer-options" class="answer-options">
+
+                <!-- Answer options will be populated by JavaScript -->
+
+            </div>
+
+            <div class="navigation-buttons">
+
+                <button id="prev-question" class="button prev-button">Previous</button>
+
+            </div>
+
+        </div>
+
+
+
+        <div id="results-page" class="page hidden">
+
+            <h2>Test Results</h2>
+
+            <div id="scores-table-container">
+
+                <table id="scores-table" class="results-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Metric</th>
+
+                            <th>Score</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td>Total Test Anxiety Score</td>
+
+                            <td id="total-score"></td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>Worry Subscale</td>
+
+                            <td id="worry-score"></td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>Cognitive Interference Subscale</td>
+
+                            <td id="cognitive-interference-score"></td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>Tension Subscale</td>
+
+                            <td id="tension-score"></td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>Physiological Indicators Subscale</td>
+
+                            <td id="physiological-indicators-score"></td>
+
+                        </tr>
+
+
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <button id="restart-test" class="button">Restart Test</button>
+
+            <div class="disclaimer">
+
+                <p><strong>Disclaimer:</strong> This tool is for informational and educational purposes only and should not be considered a substitute for professional clinical advice or diagnosis. The results provided are based on self-reported data and are not intended to be a clinical diagnosis of test anxiety. If you have concerns about test anxiety or your mental health, please consult with a qualified healthcare professional, psychologist, or counselor.</p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <script src="./MTAS/mtasScoring.js"></script>
+
+    <script src="./MTAS/script.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,212 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(to right, #ece9e6, #ffffff);
+    margin: 0;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    background-color: #fff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    max-width: 750px;
+    width: 90%;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.heading {
+    color: #0056b3;
+    margin-bottom: 30px;
+    font-size: 2.2em;
+    font-weight: 700;
+}
+
+.page {
+    margin-bottom: 20px;
+}
+
+.page h2 {
+    color: #0056b3;
+    margin-bottom: 25px;
+    font-size: 1.8em;
+}
+
+.page p {
+    font-size: 1.1em;
+    margin-bottom: 25px;
+    color: #555;
+}
+
+.button {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.05em;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin: 8px;
+    min-width: 120px;
+}
+
+.button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+.button:active {
+    transform: translateY(0);
+}
+
+.button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.navigation-buttons {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.prev-button {
+    background-color: #6c757d;
+}
+
+.prev-button:hover {
+    background-color: #5a6268;
+}
+
+.answer-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.answer-option {
+    background-color: #f8f9fa;
+    padding: 15px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+    border: 1px solid #ced4da;
+    text-align: left;
+    font-size: 1em;
+    color: #495057;
+}
+
+.answer-option:hover {
+    background-color: #e2e6ea;
+    border-color: #b8c1cb;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.answer-option.selected {
+    background-color: #28a745; /* Green for selected */
+    color: white;
+    border-color: #28a745;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    transform: translateY(-2px);
+}
+
+.radio-label {
+    display: block;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+    text-align: left;
+    padding-left: 50px; /* Adjust for radio button */
+    position: relative;
+}
+
+.radio-input {
+    margin-right: 10px;
+    transform: scale(1.3);
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%) scale(1.3);
+}
+
+.select-field {
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    font-size: 1em;
+    width: 180px;
+    text-align: center;
+    background-color: #f8f9fa;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Results Table Styling */
+#scores-table-container {
+    margin-top: 30px;
+    margin-bottom: 25px;
+    overflow-x: auto; /* Ensures responsiveness for small screens */
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 auto;
+    background-color: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.results-table th, .results-table td {
+    border: 1px solid #e9ecef;
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.results-table th {
+    background-color: #007bff;
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+.results-table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.results-table tbody tr:hover {
+    background-color: #e9f5ff;
+}
+
+.results-table td:first-child {
+    font-weight: 500;
+    color: #343a40;
+}
+
+/* Disclaimer Styling */
+.disclaimer {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #fff3cd; /* Light warning yellow */
+    border: 1px solid #ffeeba;
+    border-radius: 8px;
+    color: #856404; /* Darker yellow text */
+    font-size: 0.9em;
+    text-align: left;
+    line-height: 1.5;
+}
+
+.disclaimer strong {
+    color: #856404;
+}
