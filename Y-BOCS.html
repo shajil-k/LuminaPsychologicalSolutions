@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>Y-BOCS Self-Report Scale</title>
+  <style>
+    :root {
+      --bg-primary: #f4f7fc;
+      --bg-secondary: #ffffff;
+      --bg-card: #f9fcff;
+      --bg-input: #ffffff;
+      --text-primary: #1e2b3c;
+      --text-secondary: #3a5a7a;
+      --text-dark: #0b2b44;
+      --border-color: #dce8f2;
+      --border-hover: #b8d0e5;
+      --shadow-color: rgba(0, 20, 40, 0.08);
+      --shadow-hover: rgba(0, 40, 70, 0.2);
+      --btn-primary: #1c5a83;
+      --btn-primary-hover: #134a6e;
+      --btn-secondary: #d0dfec;
+      --btn-secondary-hover: #c0d2e3;
+      --accent-color: #2a6b9e;
+      --accent-light: #eef4fa;
+      --success-color: #2a7a4a;
+      --warning-bg: #fff3e0;
+      --warning-border: #e67e22;
+      --warning-text: #5d4037;
+      --warning-strong: #bf360c;
+      --transition: 0.3s ease;
+      --footer-color: #5a7a9a;
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #1a1f2e;
+      --bg-secondary: #242b3d;
+      --bg-card: #2a3347;
+      --bg-input: #2a3347;
+      --text-primary: #e8edf5;
+      --text-secondary: #b0c4db;
+      --text-dark: #d0dff0;
+      --border-color: #3d4a66;
+      --border-hover: #5a6f8a;
+      --shadow-color: rgba(0, 0, 0, 0.3);
+      --shadow-hover: rgba(0, 0, 0, 0.5);
+      --btn-primary: #3a7aaa;
+      --btn-primary-hover: #4a8aba;
+      --btn-secondary: #3d4a66;
+      --btn-secondary-hover: #4d5a76;
+      --accent-color: #5a8aba;
+      --accent-light: #2a3347;
+      --success-color: #3a8a5a;
+      --warning-bg: #2d241a;
+      --warning-border: #b86a2a;
+      --warning-text: #d4b8a0;
+      --warning-strong: #e88a4a;
+      --footer-color: #8aaac0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      padding: 1rem;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    .container {
+      max-width: 820px;
+      width: 100%;
+      margin: 0 auto;
+      background: var(--bg-secondary);
+      border-radius: 28px;
+      box-shadow: 0 8px 30px var(--shadow-color);
+      padding: 1.5rem 1.8rem;
+      min-height: 500px;
+      position: relative;
+      transition: background var(--transition), box-shadow var(--transition);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--text-dark);
+      border-bottom: 3px solid var(--border-color);
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.25rem;
+      flex: 1;
+      transition: color var(--transition), border-color var(--transition);
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-top: -0.2rem;
+      margin-bottom: 1.5rem;
+      font-weight: 400;
+      transition: color var(--transition);
+    }
+
+    .theme-toggle {
+      background: var(--bg-card);
+      border: 2px solid var(--border-color);
+      border-radius: 50px;
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      color: var(--text-primary);
+      flex-shrink: 0;
+      margin-top: 0.2rem;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--border-hover);
+      transform: scale(1.05);
+    }
+
+    .theme-toggle span {
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .page {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .instructions {
+      background: var(--accent-light);
+      border-radius: 18px;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 2rem;
+      font-size: 0.98rem;
+      border-left: 6px solid var(--accent-color);
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    .instructions strong {
+      color: var(--text-dark);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.3rem;
+      color: var(--text-dark);
+      transition: color var(--transition);
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.7rem 1rem;
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.15s;
+      font-family: inherit;
+      background: var(--bg-input);
+      color: var(--text-primary);
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 3px rgba(42, 107, 158, 0.1);
+    }
+
+    .form-group input::placeholder {
+      color: var(--text-secondary);
+      opacity: 0.7;
+    }
+
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px dashed var(--border-color);
+      transition: border-color var(--transition);
+    }
+
+    .question-number {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--text-dark);
+      transition: color var(--transition);
+    }
+
+    .progress-text {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      transition: color var(--transition);
+    }
+
+    .question-text {
+      font-weight: 500;
+      font-size: 1.15rem;
+      margin-bottom: 1.5rem;
+      color: var(--text-dark);
+      transition: color var(--transition);
+    }
+
+    .options-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .options-group label {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.7rem 1rem;
+      border-radius: 14px;
+      background: var(--bg-card);
+      border: 2px solid var(--border-color);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-size: 0.98rem;
+      color: var(--text-primary);
+    }
+
+    .options-group label:hover {
+      background: var(--accent-light);
+      border-color: var(--border-hover);
+    }
+
+    .options-group input[type="radio"] {
+      accent-color: var(--accent-color);
+      width: 1.2rem;
+      height: 1.2rem;
+      flex-shrink: 0;
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .options-group label.selected {
+      background: var(--accent-light);
+      border-color: var(--accent-color);
+    }
+
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: var(--btn-primary);
+      border: none;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 0.8rem 2rem;
+      border-radius: 60px;
+      cursor: pointer;
+      transition: all 0.15s;
+      box-shadow: 0 4px 8px var(--shadow-color);
+      border: 1px solid var(--btn-primary);
+      letter-spacing: 0.3px;
+      font-family: inherit;
+      min-width: 120px;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: var(--btn-primary-hover);
+      transform: scale(1.01);
+      box-shadow: 0 6px 12px var(--shadow-hover);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: var(--btn-secondary);
+      color: var(--text-dark);
+      border-color: var(--border-color);
+      box-shadow: none;
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--btn-secondary-hover);
+    }
+
+    .btn-success {
+      background: var(--success-color);
+      border-color: var(--success-color);
+    }
+
+    .btn-success:hover:not(:disabled) {
+      background: var(--success-color);
+      filter: brightness(1.1);
+    }
+
+    .result-box {
+      background: var(--accent-light);
+      border-radius: 24px;
+      padding: 1.8rem 2rem;
+      border: 1px solid var(--border-color);
+      margin-top: 1rem;
+      transition: all var(--transition);
+    }
+
+    .result-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.8rem 2rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .total-score {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      background: var(--bg-secondary);
+      padding: 0.2rem 2rem;
+      border-radius: 60px;
+      border: 1px solid var(--border-color);
+      transition: all var(--transition);
+    }
+
+    .severity-badge {
+      font-size: 1.2rem;
+      font-weight: 600;
+      padding: 0.4rem 1.5rem;
+      border-radius: 60px;
+      background: var(--bg-secondary);
+      border: 2px solid var(--accent-color);
+      color: var(--text-dark);
+      transition: all var(--transition);
+    }
+
+    .result-section {
+      margin: 1.5rem 0 0.5rem 0;
+      padding: 1rem 1.2rem;
+      background: var(--bg-secondary);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      transition: all var(--transition);
+    }
+
+    .result-section h3 {
+      color: var(--text-dark);
+      font-size: 1.1rem;
+      margin-bottom: 0.8rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 2px solid var(--border-color);
+      transition: all var(--transition);
+    }
+
+    .result-section .subtotal {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--accent-color);
+      margin-bottom: 0.8rem;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem 1.5rem;
+      margin: 0.5rem 0;
+    }
+
+    .result-item {
+      background: var(--bg-card);
+      padding: 0.4rem 1rem;
+      border-radius: 30px;
+      display: flex;
+      justify-content: space-between;
+      font-weight: 500;
+      border: 1px solid var(--border-color);
+      font-size: 0.92rem;
+      transition: all var(--transition);
+    }
+
+    .result-item .label {
+      color: var(--text-secondary);
+      transition: color var(--transition);
+    }
+
+    .result-item .value {
+      color: var(--text-dark);
+      font-weight: 700;
+      transition: color var(--transition);
+    }
+
+    .disclaimer {
+      margin-top: 1.5rem;
+      padding: 1rem 1.2rem;
+      background: var(--warning-bg);
+      border-radius: 14px;
+      border-left: 4px solid var(--warning-border);
+      font-size: 0.9rem;
+      color: var(--warning-text);
+      transition: all var(--transition);
+    }
+
+    .disclaimer strong {
+      color: var(--warning-strong);
+      transition: color var(--transition);
+    }
+
+    .user-info-display {
+      background: var(--bg-card);
+      padding: 0.8rem 1.2rem;
+      border-radius: 14px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      border: 1px solid var(--border-color);
+      transition: all var(--transition);
+    }
+
+    .user-info-display span {
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .user-info-display .label {
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 6px;
+      background: var(--border-color);
+      border-radius: 10px;
+      margin: 1rem 0 1.5rem 0;
+      overflow: hidden;
+      transition: background var(--transition);
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--accent-color);
+      border-radius: 10px;
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+      justify-content: center;
+    }
+
+    .footer {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 2px solid var(--border-color);
+      text-align: center;
+      color: var(--footer-color);
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      transition: all var(--transition);
+    }
+
+    .footer a {
+      color: var(--footer-color);
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Print/PDF styles */
+    @media print {
+      body {
+        background: white !important;
+        padding: 0 !important;
+      }
+      .container {
+        box-shadow: none !important;
+        padding: 20px !important;
+        border-radius: 0 !important;
+      }
+      .theme-toggle, .result-actions, .nav-buttons, .btn {
+        display: none !important;
+      }
+      .page {
+        display: block !important;
+      }
+      .page:not(.active) {
+        display: none !important;
+      }
+      #page-results {
+        display: block !important;
+      }
+      .result-box {
+        background: #f5f8fc !important;
+        border: 1px solid #dce8f2 !important;
+      }
+      .result-section {
+        background: white !important;
+        border: 1px solid #dce8f2 !important;
+      }
+      .result-item {
+        background: #f9fcff !important;
+        border: 1px solid #dce8f2 !important;
+      }
+      .disclaimer {
+        background: #fff3e0 !important;
+        border-left: 4px solid #e67e22 !important;
+      }
+      .footer {
+        border-top: 2px solid #dce8f2 !important;
+      }
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 0.5rem; }
+      .container { padding: 1rem; border-radius: 20px; }
+      h1 { font-size: 1.5rem; }
+      .result-grid { grid-template-columns: 1fr; }
+      .btn { min-width: 100px; padding: 0.7rem 1.2rem; font-size: 0.9rem; }
+      .total-score { font-size: 2rem; padding: 0.2rem 1.2rem; }
+      .nav-buttons { flex-direction: column; align-items: stretch; }
+      .nav-buttons .btn { width: 100%; }
+      .result-header { flex-direction: column; align-items: stretch; text-align: center; }
+      .result-actions { flex-direction: column; }
+      .result-actions .btn { width: 100%; }
+      .user-info-display { gap: 0.8rem; }
+      .header-top { flex-direction: column; align-items: stretch; }
+      .theme-toggle { align-self: flex-end; }
+      .result-section { padding: 0.8rem; }
+    }
+
+    @media (max-width: 400px) {
+      .container { padding: 0.8rem; }
+      .question-text { font-size: 1rem; }
+      .options-group label { font-size: 0.9rem; padding: 0.6rem 0.8rem; }
+      .result-item { font-size: 0.85rem; padding: 0.3rem 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="container" id="app">
+  <div class="header-top">
+    <div>
+      <h1>Y‑BOCS Self‑Report Scale</h1>
+      <div class="subtitle">Yale‑Brown Obsessive Compulsive Scale</div>
+    </div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      🌓 <span id="themeLabel">Dark</span>
+    </button>
+  </div>
+
+  <!-- PAGE 0: User Info -->
+  <div class="page active" id="page-0">
+    <div style="margin: 0.5rem 0 1.5rem 0;">
+      <p style="font-size: 1.05rem; color: var(--text-secondary);">Please enter your information to begin the assessment. (All fields are optional)</p>
+    </div>
+    <div class="form-group">
+      <label for="userName">Full Name <span style="color: var(--text-secondary); font-weight: 400;">(optional)</span></label>
+      <input type="text" id="userName" placeholder="Enter your full name (optional)" autocomplete="name">
+    </div>
+    <div class="form-group">
+      <label for="userAge">Age <span style="color: var(--text-secondary); font-weight: 400;">(optional)</span></label>
+      <input type="number" id="userAge" placeholder="Enter your age (optional)" min="1" max="120" autocomplete="age">
+    </div>
+    <div class="nav-buttons" style="justify-content: flex-end;">
+      <button class="btn" id="startBtn">Start Assessment →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 1: Instructions -->
+  <div class="page" id="page-1">
+    <div class="instructions">
+      <strong>📋 Instructions</strong><br><br>
+      Before proceeding, please understand the definitions of obsessions and compulsions:
+      <br><br>
+      <strong>OBSESSIONS</strong> are unwelcome and distressing ideas, thoughts, images, or impulses that repeatedly enter your mind. They may seem to occur against your will and may be repugnant or senseless to you.
+      <br><br>
+      <strong>COMPULSIONS</strong> are behaviors or acts that you feel driven to perform, even though you may recognize them as senseless or excessive. You may try to resist them, but this can be difficult.
+      <br><br>
+      <strong>Please rate each item based on your experience during the PAST WEEK (including today).</strong>
+    </div>
+    <div style="background: var(--bg-card); border-radius: 14px; padding: 1rem; border: 1px solid var(--border-color); margin-bottom: 1.5rem; transition: all var(--transition);">
+      <p style="font-size: 0.95rem; color: var(--text-secondary);">
+        <strong style="color: var(--text-dark);">Example:</strong> An obsession could be a recurrent thought about harming someone, even though you never would. A compulsion could be repeatedly checking that appliances are turned off before leaving home.
+      </p>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" id="backToInfoBtn">← Back</button>
+      <button class="btn" id="startQuestionsBtn">Begin Questions →</button>
+    </div>
+  </div>
+
+  <!-- PAGES 2-11: Questions (one per page) -->
+  <div id="questionPages"></div>
+
+  <!-- PAGE 12: Results -->
+  <div class="page" id="page-results">
+    <div class="user-info-display">
+      <span><span class="label">Name:</span> <span id="displayName">-</span></span>
+      <span><span class="label">Age:</span> <span id="displayAge">-</span></span>
+      <span><span class="label">Date:</span> <span id="displayDate">-</span></span>
+    </div>
+    <div class="result-box" id="resultContent">
+      <div class="result-header">
+        <span style="font-weight: 500; color: var(--text-secondary);">Total Y‑BOCS Score</span>
+        <span class="total-score" id="totalScoreDisplay">0</span>
+        <span class="severity-badge" id="severityDisplay">Subclinical</span>
+      </div>
+      
+      <!-- Obsessions Section -->
+      <div class="result-section" id="obsessionsSection">
+        <h3>🔁 Obsessions</h3>
+        <div class="subtotal">Total: <span id="obsSubtotal">0</span></div>
+        <div class="result-grid" id="obsGrid">
+          <div class="result-item"><span class="label">Time occupied</span><span class="value" id="obs1">0</span></div>
+          <div class="result-item"><span class="label">Interference</span><span class="value" id="obs2">0</span></div>
+          <div class="result-item"><span class="label">Distress</span><span class="value" id="obs3">0</span></div>
+          <div class="result-item"><span class="label">Resistance effort</span><span class="value" id="obs4">0</span></div>
+          <div class="result-item"><span class="label">Degree of control</span><span class="value" id="obs5">0</span></div>
+        </div>
+      </div>
+
+      <!-- Compulsions Section -->
+      <div class="result-section" id="compulsionsSection">
+        <h3>⚙️ Compulsions</h3>
+        <div class="subtotal">Total: <span id="compSubtotal">0</span></div>
+        <div class="result-grid" id="compGrid">
+          <div class="result-item"><span class="label">Time spent</span><span class="value" id="comp6">0</span></div>
+          <div class="result-item"><span class="label">Interference</span><span class="value" id="comp7">0</span></div>
+          <div class="result-item"><span class="label">Distress if prevented</span><span class="value" id="comp8">0</span></div>
+          <div class="result-item"><span class="label">Resistance effort</span><span class="value" id="comp9">0</span></div>
+          <div class="result-item"><span class="label">Degree of control</span><span class="value" id="comp10">0</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="disclaimer">
+      <strong>⚠️ Important Note:</strong> This is a <strong>self-report screening tool</strong> and is not a clinical diagnosis. Only a qualified healthcare or mental health professional can diagnose obsessive-compulsive disorder (OCD). The results of this assessment are for informational purposes and should be discussed with a professional for proper evaluation and guidance.
+    </div>
+    <div class="result-actions">
+      <button class="btn btn-success" id="downloadPdfBtn">📥 Download PDF Report</button>
+      <button class="btn btn-secondary" id="retakeBtn">↻ Retake Assessment</button>
+    </div>
+    <div class="footer">
+      <a href="https://luminapsychologicalsolutions.com" target="_blank">Lumina Psychological Solutions</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // --- Question definitions (10 items) with exact PDF options ---
+    const questions = [
+      { id: 1, text: 'How much of your time is occupied by obsessive thoughts?', options: ['None', 'Less than 1 hr/day or occasional', '1–3 hrs/day or frequent', '3–8 hrs/day or very frequent', '>8 hrs/day or near constant'] },
+      { id: 2, text: 'How much do your obsessive thoughts interfere with work, school, social, or other important functioning?', options: ['None', 'Slight interference, overall performance not impaired', 'Definite interference, but still manageable', 'Substantial impairment', 'Incapacitating'] },
+      { id: 3, text: 'How much distress do your obsessive thoughts cause you?', options: ['None', 'Not too disturbing', 'Disturbing, but still manageable', 'Very disturbing', 'Near constant and disabling distress'] },
+      { id: 4, text: 'How much effort do you make to resist the obsessive thoughts?', options: ['Try to resist all the time', 'Try to resist most of the time', 'Make some effort to resist', 'Yield to all obsessions without attempting to control', 'Completely and willingly yield to all obsessions'] },
+      { id: 5, text: 'How much control do you have over your obsessive thoughts?', options: ['Complete control', 'Usually able to stop or divert with effort', 'Sometimes able to stop or divert', 'Rarely successful, can only divert with difficulty', 'Completely involuntary, rarely able to alter thinking'] },
+      { id: 6, text: 'How much time do you spend performing compulsive behaviors?', options: ['None', 'Less than 1 hr/day or occasional', '1–3 hrs/day or frequent', '3–8 hrs/day or very frequent', '>8 hrs/day or near constant'] },
+      { id: 7, text: 'How much do your compulsive behaviors interfere with work, school, social, or other important functioning?', options: ['None', 'Slight interference, overall performance not impaired', 'Definite interference, but still manageable', 'Substantial impairment', 'Incapacitating'] },
+      { id: 8, text: 'How would you feel if prevented from performing your compulsion(s)?', options: ['None', 'Only slightly anxious', 'Anxiety would mount but remain manageable', 'Prominent and very disturbing increase in anxiety', 'Incapacitating anxiety'] },
+      { id: 9, text: 'How much effort do you make to resist the compulsions?', options: ['Always try to resist', 'Try to resist most of the time', 'Make some effort to resist', 'Yield to almost all compulsions without attempting to control', 'Completely and willingly yield to all compulsions'] },
+      { id: 10, text: 'How strong is the drive to perform the compulsive behavior?', options: ['Complete control', 'Usually able to exercise voluntary control', 'Strong pressure, can control only with difficulty', 'Very strong drive, must be carried to completion', 'Completely involuntary and overpowering, rarely able to delay'] }
+    ];
+
+    // Hidden score values (0-4) for each option
+    const scoreValues = [0, 1, 2, 3, 4];
+
+    // Severity ranges
+    const severityRanges = [
+      { min: 0, max: 7, label: 'Subclinical' },
+      { min: 8, max: 15, label: 'Mild' },
+      { min: 16, max: 23, label: 'Moderate' },
+      { min: 24, max: 31, label: 'Severe' },
+      { min: 32, max: 40, label: 'Extreme' }
+    ];
+
+    // State
+    let currentPage = 0;
+    let userData = { name: '', age: '' };
+    let answers = {};
+    let isDarkTheme = false;
+    let autoAdvanceTimeout = null;
+
+    // DOM refs
+    const questionPagesContainer = document.getElementById('questionPages');
+
+    // --- Theme toggle ---
+    function toggleTheme() {
+      isDarkTheme = !isDarkTheme;
+      document.documentElement.setAttribute('data-theme', isDarkTheme ? 'dark' : 'light');
+      document.getElementById('themeLabel').textContent = isDarkTheme ? 'Light' : 'Dark';
+      localStorage.setItem('y-bocs-theme', isDarkTheme ? 'dark' : 'light');
+    }
+
+    function loadTheme() {
+      const saved = localStorage.getItem('y-bocs-theme');
+      if (saved === 'dark') {
+        isDarkTheme = true;
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.getElementById('themeLabel').textContent = 'Light';
+      }
+    }
+
+    document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+    loadTheme();
+
+    // --- Build question pages ---
+    function buildQuestionPages() {
+      let html = '';
+      questions.forEach((q, index) => {
+        const pageNum = index + 2;
+        html += `
+          <div class="page" id="page-${pageNum}">
+            <div class="question-header">
+              <span class="question-number">Question ${index + 1} of ${questions.length}</span>
+              <span class="progress-text">${Math.round((index + 1) / questions.length * 100)}% complete</span>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar" style="width: ${((index + 1) / questions.length * 100)}%;"></div>
+            </div>
+            <div class="question-text">${q.text}</div>
+            <div class="options-group" data-qid="${q.id}">
+              ${q.options.map((opt, optIndex) => `
+                <label class="option-item" data-value="${scoreValues[optIndex]}">
+                  <input type="radio" name="q${q.id}" value="${scoreValues[optIndex]}">
+                  <span>${opt}</span>
+                </label>
+              `).join('')}
+            </div>
+            <div class="nav-buttons">
+              <button class="btn btn-secondary prev-btn" ${index === 0 ? 'disabled' : ''}>← Back</button>
+              <button class="btn next-btn" ${index === questions.length - 1 ? 'style="background:#2a7a4a;border-color:#1e6a3a;"' : ''}>
+                ${index === questions.length - 1 ? 'Submit & See Results →' : 'Next →'}
+              </button>
+            </div>
+          </div>
+        `;
+      });
+      questionPagesContainer.innerHTML = html;
+    }
+    buildQuestionPages();
+
+    // --- Navigation functions ---
+    function showPage(pageIndex) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      
+      let targetPage;
+      if (pageIndex === 'results') {
+        targetPage = document.getElementById('page-results');
+      } else {
+        targetPage = document.getElementById(`page-${pageIndex}`);
+      }
+      
+      if (targetPage) {
+        targetPage.classList.add('active');
+        currentPage = pageIndex;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function getCurrentQuestionIndex() {
+      for (let i = 2; i <= 11; i++) {
+        const el = document.getElementById(`page-${i}`);
+        if (el && el.classList.contains('active')) {
+          return i - 2;
+        }
+      }
+      return -1;
+    }
+
+    function getSelectedValue(qid) {
+      const radios = document.querySelectorAll(`input[name="q${qid}"]`);
+      for (let r of radios) {
+        if (r.checked) return parseInt(r.value, 10);
+      }
+      return null;
+    }
+
+    function getAllAnswers() {
+      const result = {};
+      for (let i = 1; i <= 10; i++) {
+        result[i] = getSelectedValue(i);
+      }
+      return result;
+    }
+
+    function isAllAnswered() {
+      for (let i = 1; i <= 10; i++) {
+        if (getSelectedValue(i) === null) return false;
+      }
+      return true;
+    }
+
+    function getSeverity(score) {
+      for (let range of severityRanges) {
+        if (score >= range.min && score <= range.max) {
+          return range.label;
+        }
+      }
+      return 'Unknown';
+    }
+
+    // --- Results calculation ---
+    function calculateResults() {
+      const scores = getAllAnswers();
+      const obsSum = scores[1] + scores[2] + scores[3] + scores[4] + scores[5];
+      const compSum = scores[6] + scores[7] + scores[8] + scores[9] + scores[10];
+      const total = obsSum + compSum;
+
+      return { 
+        total, obsSum, compSum,
+        obs: [scores[1], scores[2], scores[3], scores[4], scores[5]],
+        comp: [scores[6], scores[7], scores[8], scores[9], scores[10]]
+      };
+    }
+
+    // --- Display results ---
+    function showResults() {
+      const results = calculateResults();
+      const severity = getSeverity(results.total);
+
+      document.getElementById('displayName').textContent = userData.name || 'Not provided';
+      document.getElementById('displayAge').textContent = userData.age || 'Not provided';
+      document.getElementById('displayDate').textContent = new Date().toLocaleDateString();
+
+      document.getElementById('totalScoreDisplay').textContent = results.total;
+      document.getElementById('severityDisplay').textContent = severity;
+      
+      // Obsessions
+      document.getElementById('obsSubtotal').textContent = results.obsSum;
+      for (let i = 0; i < 5; i++) {
+        document.getElementById(`obs${i+1}`).textContent = results.obs[i];
+      }
+      
+      // Compulsions
+      document.getElementById('compSubtotal').textContent = results.compSum;
+      for (let i = 0; i < 5; i++) {
+        document.getElementById(`comp${i+6}`).textContent = results.comp[i];
+      }
+
+      showPage('results');
+    }
+
+    // --- Auto-advance on selection ---
+    function setupAutoAdvance() {
+      document.addEventListener('change', function(e) {
+        if (e.target.type === 'radio') {
+          // Visual feedback
+          const parent = e.target.closest('.options-group');
+          if (parent) {
+            parent.querySelectorAll('.option-item').forEach(label => {
+              label.classList.toggle('selected', label.querySelector('input[type="radio"]').checked);
+            });
+          }
+
+          // Clear any pending timeout
+          if (autoAdvanceTimeout) {
+            clearTimeout(autoAdvanceTimeout);
+            autoAdvanceTimeout = null;
+          }
+
+          // Auto-advance logic
+          const qIndex = getCurrentQuestionIndex();
+          if (qIndex === -1) return;
+          
+          const qid = qIndex + 1;
+          const selected = getSelectedValue(qid);
+          if (selected === null) return;
+          
+          answers[qid] = selected;
+          
+          // Small delay for visual feedback before moving
+          autoAdvanceTimeout = setTimeout(() => {
+            if (qIndex === questions.length - 1) {
+              // Last question - show results
+              if (isAllAnswered()) {
+                showResults();
+              }
+            } else {
+              showPage(qIndex + 3);
+            }
+            autoAdvanceTimeout = null;
+          }, 300);
+        }
+      });
+    }
+    setupAutoAdvance();
+
+    // --- Event listeners for buttons ---
+    document.getElementById('startBtn').addEventListener('click', function() {
+      const name = document.getElementById('userName').value.trim();
+      const age = document.getElementById('userAge').value.trim();
+      userData.name = name;
+      userData.age = age;
+      showPage(1);
+    });
+
+    document.getElementById('backToInfoBtn').addEventListener('click', function() {
+      showPage(0);
+    });
+
+    document.getElementById('startQuestionsBtn').addEventListener('click', function() {
+      showPage(2);
+    });
+
+    // --- Question navigation (manual buttons) ---
+    document.addEventListener('click', function(e) {
+      // Next button
+      if (e.target.classList.contains('next-btn')) {
+        const qIndex = getCurrentQuestionIndex();
+        if (qIndex === -1) return;
+        const qid = qIndex + 1;
+        const selected = getSelectedValue(qid);
+        if (selected === null) {
+          alert('Please select an answer before continuing.');
+          return;
+        }
+        answers[qid] = selected;
+        if (qIndex === questions.length - 1) {
+          if (isAllAnswered()) {
+            showResults();
+          } else {
+            alert('Please answer all questions before submitting.');
+          }
+        } else {
+          showPage(qIndex + 3);
+        }
+      }
+
+      // Previous button
+      if (e.target.classList.contains('prev-btn')) {
+        // Clear any pending auto-advance
+        if (autoAdvanceTimeout) {
+          clearTimeout(autoAdvanceTimeout);
+          autoAdvanceTimeout = null;
+        }
+        const qIndex = getCurrentQuestionIndex();
+        if (qIndex === -1) return;
+        if (qIndex === 0) {
+          showPage(1);
+        } else {
+          showPage(qIndex + 1);
+        }
+      }
+    });
+
+    document.getElementById('retakeBtn').addEventListener('click', function() {
+      if (autoAdvanceTimeout) {
+        clearTimeout(autoAdvanceTimeout);
+        autoAdvanceTimeout = null;
+      }
+      document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+      document.querySelectorAll('.option-item').forEach(label => label.classList.remove('selected'));
+      answers = {};
+      document.getElementById('userName').value = '';
+      document.getElementById('userAge').value = '';
+      userData = { name: '', age: '' };
+      showPage(0);
+    });
+
+    // --- PDF Download using window.print() ---
+    document.getElementById('downloadPdfBtn').addEventListener('click', function() {
+      // First, make sure we're on the results page
+      const resultsPage = document.getElementById('page-results');
+      if (!resultsPage.classList.contains('active')) {
+        // Force results page to be visible for printing
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        resultsPage.classList.add('active');
+      }
+      
+      // Trigger print dialog - user can "Save as PDF"
+      window.print();
+    });
+
+    // Keyboard support
+    document.getElementById('userName').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('startBtn').click();
+      }
+    });
+    document.getElementById('userAge').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('startBtn').click();
+      }
+    });
+
+    // Initial page
+    showPage(0);
+  })();
+</script>
+</body>
+</html>
